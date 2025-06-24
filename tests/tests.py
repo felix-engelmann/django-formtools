@@ -2,14 +2,22 @@ import datetime
 import os
 import unittest
 import warnings
+from io import StringIO
 
 from django import http
+from django.core.files.uploadedfile import (
+    InMemoryUploadedFile, TemporaryUploadedFile,
+)
 from django.test import TestCase, override_settings
 
 from formtools import preview, utils
 
 from .forms import (
+<<<<<<< HEAD
     HashTestBlankForm, HashTestForm, ManyModel, OtherModelForm, TestForm,
+=======
+    HashTestBlankForm, HashTestForm, HashTestFormWithFile, TestForm,
+>>>>>>> upstream/master
 )
 
 success_string = "Done was called!"
@@ -194,6 +202,23 @@ class FormHmacTests(unittest.TestCase):
         hash2 = utils.form_hmac(f2)
         self.assertEqual(hash1, hash2)
 
+    def test_hash_with_file(self):
+        with InMemoryUploadedFile(StringIO('1'), '', 'test', 'text/plain', 1, 'utf8') as some_file:
+            f1 = HashTestFormWithFile({'name': 'joe'})
+            f2 = HashTestFormWithFile({'name': 'joe'}, files={'attachment': some_file})
+            hash1 = utils.form_hmac(f1)
+            hash2 = utils.form_hmac(f2)
+        self.assertNotEqual(hash1, hash2)
+
+        with TemporaryUploadedFile('test', 'text/plain', 1, 'utf8') as some_file:
+            some_file.write(b'1')
+            some_file.seek(0)
+            f1 = HashTestFormWithFile({'name': 'joe'})
+            f2 = HashTestFormWithFile({'name': 'joe'}, files={'attachment': some_file})
+            hash1 = utils.form_hmac(f1)
+            hash2 = utils.form_hmac(f2)
+        self.assertNotEqual(hash1, hash2)
+
 
 class PicklingTests(unittest.TestCase):
 
@@ -218,3 +243,4 @@ class PicklingTests(unittest.TestCase):
         hash1 = utils.form_hmac(f1)
         hash2 = utils.form_hmac(f2)
         self.assertEqual(hash1, hash2)
+

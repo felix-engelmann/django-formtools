@@ -37,8 +37,8 @@ Package Index: https://pypi.python.org/pypi/django-formtools
 
 To get more help:
 
-* Join the #django channel on irc.freenode.net. Lots of helpful people hang out
-  there. Read the archives at https://botbot.me/freenode/django/.
+* Join the #django channel on irc.libera.chat. Lots of helpful people hang out
+  there.
 
 * Join the django-users mailing list, or read the archives, at
   https://groups.google.com/group/django-users.
@@ -65,19 +65,11 @@ the ``-l`` option::
 
     $ tox -l
     ...
-    py38-django-AB
-    py38-django-master
+    py310-djangoAB
+    py310-djangomain
 
 You can run each environment with the ``-e`` option::
 
-    $ tox -e py38-django-AB  # runs the tests only on Python 3.5 and Django A.B.x
-
-Optionally you can also specify a country whose tests you want to run::
-
-    $ COUNTRY=us tox
-
-And combine both options::
-
-    $ COUNTRY=us tox -e py38-django-AB
+    $ tox -e py310-djangoAB  # runs the tests only on Python 3.10 and Django A.B.x
 
 __ https://tox.readthedocs.io/en/latest/install.html

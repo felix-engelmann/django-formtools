@@ -1,3 +1,4 @@
+import sys
 from importlib import import_module
 
 from django import forms, http
@@ -87,8 +88,16 @@ class TestWizardWithInitAttrs(TestWizard):
 
 class TestWizardWithTypeCheck(TestWizard):
     def done(self, form_list, **kwargs):
-        assert type(form_list) is list, "`form_list` was {}, should be a list".format(type(form_list))
+        assert isinstance(form_list, list), f"`form_list` was {type(form_list)}, should be a list"
         return http.HttpResponse("All good")
+
+
+class TestWizardWithCustomGetFormList(TestWizard):
+
+    form_list = [Step1]
+
+    def get_form_list(self):
+        return {'start': Step1, 'step2': Step2}
 
 
 class FormTests(TestCase):
@@ -149,6 +158,26 @@ class FormTests(TestCase):
         )
         response, instance = testform(request)
         self.assertEqual(instance.get_next_step(), 'step2')
+
+    def test_form_condition_avoid_recursion(self):
+        def subsequent_step_check(wizard):
+            data = wizard.get_cleaned_data_for_step('step3') or {}
+            return data.get('foo')
+
+        testform = TestWizard.as_view(
+            [('start', Step1), ('step2', Step2), ('step3', Step3)],
+            condition_dict={'step3': subsequent_step_check}
+        )
+        request = get_request()
+        old_limit = sys.getrecursionlimit()
+        sys.setrecursionlimit(80)
+        try:
+            response, instance = testform(request)
+            self.assertEqual(instance.get_next_step(), 'step2')
+        except RecursionError:
+            self.fail("RecursionError happened during wizard test.")
+        finally:
+            sys.setrecursionlimit(old_limit)
 
     def test_form_condition_unstable(self):
         request = get_request()
@@ -236,6 +265,14 @@ class FormTests(TestCase):
         response, instance = testform(request)
         self.assertRaises(NotImplementedError, instance.done, None)
 
+    def test_goto_step_kwargs(self):
+        """Any extra kwarg given to render_goto_step is added to response context."""
+        request = get_request()
+        testform = TestWizard.as_view([('start', Step1), ('step2', Step2)])
+        _, instance = testform(request)
+        response = instance.render_goto_step('start', context_var='Foo')
+        self.assertIn('context_var', response.context_data.keys())
+
     def test_revalidation(self):
         request = get_request()
         testform = TestWizard.as_view([('start', Step1), ('step2', Step2)])
@@ -248,6 +285,25 @@ class FormTests(TestCase):
         testform = TestWizardWithTypeCheck.as_view([('start', Step1)])
         response, instance = testform(request)
         self.assertEqual(response.status_code, 200)
+
+    def test_get_form_list_default(self):
+        request = get_request()
+        testform = TestWizard.as_view([('start', Step1)])
+        response, instance = testform(request)
+
+        form_list = instance.get_form_list()
+        self.assertEqual(form_list, {'start': Step1})
+        with self.assertRaises(KeyError):
+            instance.get_form('step2')
+
+    def test_get_form_list_custom(self):
+        request = get_request()
+        testform = TestWizardWithCustomGetFormList.as_view([('start', Step1)])
+        response, instance = testform(request)
+
+        form_list = instance.get_form_list()
+        self.assertEqual(form_list, {'start': Step1, 'step2': Step2})
+        self.assertIsInstance(instance.get_form('step2'), Step2)
 
 
 class SessionFormTests(TestCase):

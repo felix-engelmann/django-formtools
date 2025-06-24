@@ -41,7 +41,7 @@ class StepsHelper:
         return self.count
 
     def __repr__(self):
-        return '<StepsHelper for %s (steps: %s)>' % (self._wizard, self.all)
+        return f'<StepsHelper for {self._wizard} (steps: {self.all})>'
 
     @property
     def all(self):
@@ -109,7 +109,7 @@ class WizardView(TemplateView):
     template_name = 'formtools/wizard/wizard_form.html'
 
     def __repr__(self):
-        return '<%s: forms: %s>' % (self.__class__.__name__, self.form_list)
+        return f'<{self.__class__.__name__}: forms: {self.form_list}>'
 
     @classonlymethod
     def as_view(cls, *args, **kwargs):
@@ -213,6 +213,11 @@ class WizardView(TemplateView):
         could use data from other (maybe previous forms).
         """
         form_list = OrderedDict()
+        if getattr(self, '_check_cond_started', False):
+            # Guard against infinite recursion, in the case a get_form_list is
+            # called in the context of a condition() call.
+            return self.form_list
+        self._check_cond_started = True
         for form_key, form_class in self.form_list.items():
             # try to fetch the value from condition list, by default, the form
             # gets passed to the new list.
@@ -222,6 +227,7 @@ class WizardView(TemplateView):
                 condition = condition(self)
             if condition:
                 form_list[form_key] = form_class
+        del self._check_cond_started
         return form_list
 
     def dispatch(self, request, *args, **kwargs):
@@ -253,7 +259,7 @@ class WizardView(TemplateView):
 
         If a GET request reaches this point, the wizard assumes that the user
         just starts at the first step or wants to restart the process.
-        The data of the wizard will be resetted before rendering the first step
+        The data of the wizard will be reset before rendering the first step
         """
         self.storage.reset()
 
@@ -331,7 +337,7 @@ class WizardView(TemplateView):
         form = self.get_form(
             data=self.storage.get_step_data(self.steps.current),
             files=self.storage.get_step_files(self.steps.current))
-        return self.render(form)
+        return self.render(form, **kwargs)
 
     def render_done(self, form, **kwargs):
         """
@@ -406,7 +412,7 @@ class WizardView(TemplateView):
         """
         if step is None:
             step = self.steps.current
-        form_class = self.form_list[step]
+        form_class = self.get_form_list()[step]
         # prepare the kwargs for the form instance.
         kwargs = self.get_form_kwargs(step)
         kwargs.update({
@@ -647,15 +653,12 @@ class NamedUrlWizardView(WizardView):
         """
         This renders the form or, if needed, does the http redirects.
         """
-        step_url = kwargs.get('step', None)
+        step_url = kwargs.get('step')
         if step_url is None:
             if 'reset' in self.request.GET:
                 self.storage.reset()
                 self.storage.current_step = self.steps.first
-            if self.request.GET:
-                query_string = "?%s" % self.request.GET.urlencode()
-            else:
-                query_string = ""
+            query_string = '?%s' % self.request.GET.urlencode() if self.request.GET else ''
             return redirect(self.get_step_url(self.steps.current) + query_string)
 
         # is the current step the "done" name/view?
@@ -742,7 +745,7 @@ class NamedUrlWizardView(WizardView):
         When rendering the done view, we have to redirect first (if the URL
         name doesn't fit).
         """
-        if kwargs.get('step', None) != self.done_step_name:
+        if kwargs.get('step') != self.done_step_name:
             return redirect(self.get_step_url(self.done_step_name))
         return super().render_done(form, **kwargs)
 

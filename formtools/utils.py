@@ -1,6 +1,7 @@
 import pickle
 
 from django.db.models import QuerySet
+from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.utils.crypto import salted_hmac
 
 
@@ -32,12 +33,14 @@ def form_hmac(form):
     for bf in form:
         # Get the value from the form data. If the form allows empty or hasn't
         # changed then don't call clean() to avoid trigger validation errors.
-        if form.empty_permitted and not form.has_changed():
+        if form.empty_permitted and not form.has_changed():  # noqa: SIM108
             value = bf.data or ''
         else:
             value = bf.field.clean(bf.data) or ''
         if isinstance(value, str):
             value = value.strip()
+        elif isinstance(value, TemporaryUploadedFile):
+            value = value.read()
         data.append((bf.name, value))
 
     sanitised_data = sanitise(data)

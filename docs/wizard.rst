@@ -219,17 +219,17 @@ Here's a full example template:
     {% if wizard.form.forms %}
         {{ wizard.form.management_form }}
         {% for form in wizard.form.forms %}
-            {{ form }}
+            {{ form.as_table }}
         {% endfor %}
     {% else %}
         {{ wizard.form }}
     {% endif %}
     </table>
     {% if wizard.steps.prev %}
-    <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
-    <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
+    <button name="wizard_goto_step" type="submit" formnovalidate value="{{ wizard.steps.first }}">{% translate "first step" %}</button>
+    <button name="wizard_goto_step" type="submit" formnovalidate value="{{ wizard.steps.prev }}">{% translate "prev step" %}</button>
     {% endif %}
-    <input type="submit" value="{% trans "submit" %}"/>
+    <input type="submit" value="{% translate "submit" %}"/>
     </form>
     {% endblock %}
 

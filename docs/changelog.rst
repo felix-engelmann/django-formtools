@@ -3,13 +3,63 @@ Changelog
 
 This page details the changes in the various ``django-formtools`` releases.
 
-Next Release (TBC)
+2.5.1 (2023-12-19)
 ------------------
+
+- Version 2.5 was never released on PyPi due to a pyproject.toml
+  misconfiguration.
+
+2.5 (2023-11-28)
+----------------
+
+- Confirmed support for Python 3.12 and Django 5.0.
+
+- Replaced deprecated pkg_resources usage by importlib.metadata.
+
+- Applied PEP 621 (replaced setup.py with pyproject.toml).
+
+- Removed Python 3.7 support.
+
+- Updated translations (Galician, Portuguese, Slovenian, Serbian).
+
+2.4.1 (2023-05-13)
+------------------
+
+- Fixed a regression causing a recursion error when getting ``get_form_list()``
+  from a form condition (#220).
+
+- Removed Python 3.6 support and added Python 3.11 to test matrix.
+
+- Dropped testing for Django < 3.2 and confirmed support for Django 4.2.
+
+2.4 (2022-09-28)
+----------------
+
+- Updated translations from Transifex.
+
+- Any kwarg passed to ``render_goto_step()`` is passed over to ``render``.
+
+- ``WizardView`` is using ``get_form_list()`` instead of directly accessing
+  ``form_list`` (#168).
+
+- Added Python 3.10 to test matrix.
+
+- Dropped testing for Django 3.1.
+
+- Confirmed support for Django 4.0 and 4.1.
+
+2.3 (2021-04-18)
+----------------
 
 - Dropped testing for Django 1.11, 2.0 and 2.1.
 
 - Added support for Django 3.1 and Python 3.9.
 
+- Added support for Django 3.2.
+
+- Dropped support for Django 3.0.
+
+- Dropped support for Python 3.5.
 
 2.2 (2019-12-05)
 ----------------

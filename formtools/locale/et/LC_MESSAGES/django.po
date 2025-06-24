@@ -2,16 +2,16 @@
 # 
 # Translators:
 # Janno Liivak <jannolii@gmail.com>, 2013
-# Martin Pajuste <martinpajuste@gmail.com>, 2015-2016
-# Martin Pajuste <martinpajuste@gmail.com>, 2017
+# Martin <martinpajuste@gmail.com>, 2015-2016
+# Martin <martinpajuste@gmail.com>, 2017
 # Marti Raudsepp <marti@juffo.org>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: django-formtools\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-03-25 09:31-0500\n"
-"PO-Revision-Date: 2017-09-20 12:01+0000\n"
-"Last-Translator: Martin Pajuste <martinpajuste@gmail.com>\n"
+"PO-Revision-Date: 2017-10-05 20:14+0000\n"
+"Last-Translator: Martin <martinpajuste@gmail.com>, 2017\n"
 "Language-Team: Estonian (http://www.transifex.com/django/django-formtools/language/et/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -29,7 +29,7 @@ msgstr "Palun parandage järgnevad vead"
 
 #: templates/formtools/form.html:6 templates/formtools/preview.html:24
 msgid "Submit"
-msgstr ""
+msgstr "Esita"
 
 #: templates/formtools/form.html:13 templates/formtools/preview.html:34
 msgid "Preview"
@@ -37,12 +37,12 @@ msgstr "Eelvaade"
 
 #: templates/formtools/preview.html:6
 msgid "Preview your submission"
-msgstr ""
+msgstr "Esitamise eelvaade"
 
 #: templates/formtools/preview.html:17
 #, python-format
 msgid "Security hash: %(hash_value)s"
-msgstr ""
+msgstr "Turvalisuse räsi: %(hash_value)s"
 
 #: templates/formtools/preview.html:27
 msgid "Or edit it again"
