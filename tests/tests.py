@@ -13,11 +13,7 @@ from django.test import TestCase, override_settings
 from formtools import preview, utils
 
 from .forms import (
-<<<<<<< HEAD
-    HashTestBlankForm, HashTestForm, ManyModel, OtherModelForm, TestForm,
-=======
-    HashTestBlankForm, HashTestForm, HashTestFormWithFile, TestForm,
->>>>>>> upstream/master
+    HashTestBlankForm, HashTestForm, HashTestFormWithFile, ManyModel, OtherModelForm, TestForm,
 )
 
 success_string = "Done was called!"
