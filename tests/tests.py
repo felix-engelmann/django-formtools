@@ -243,4 +243,3 @@ class PicklingTests(unittest.TestCase):
         hash1 = utils.form_hmac(f1)
         hash2 = utils.form_hmac(f2)
         self.assertEqual(hash1, hash2)
-
