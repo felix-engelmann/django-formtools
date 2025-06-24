@@ -8,6 +8,9 @@ class ManyModel(models.Model):
     class Meta:
         app_label = 'formtools'
 
+    def __str__(self):
+        return self.name
+
 
 class OtherModel(models.Model):
     name = models.CharField(max_length=100)
@@ -16,11 +19,14 @@ class OtherModel(models.Model):
     class Meta:
         app_label = 'formtools'
 
+    def __str__(self):
+        return self.name + " with " + ", ".join(map(str, self.manymodels.all()))
+
 
 class OtherModelForm(forms.ModelForm):
     class Meta:
         model = OtherModel
-        fields = '__all__'
+        fields = ["name", "manymodels"]
 
 
 class TestForm(forms.Form):

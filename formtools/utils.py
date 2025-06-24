@@ -1,16 +1,16 @@
 import pickle
 
-from django.db.models import QuerySet
 from django.core.files.uploadedfile import TemporaryUploadedFile
+from django.db.models import QuerySet
 from django.utils.crypto import salted_hmac
 
 
 def sanitise(obj):
-    if type(obj) == list:
+    if isinstance(obj, list):
         return [sanitise(o) for o in obj]
-    elif type(obj) == tuple:
+    elif isinstance(obj, tuple):
         return tuple([sanitise(o) for o in obj])
-    elif type(obj) == QuerySet:
+    elif isinstance(obj, QuerySet):
         return [sanitise(o) for o in list(obj)]
     try:
         od = obj.__dict__

@@ -13,7 +13,8 @@ from django.test import TestCase, override_settings
 from formtools import preview, utils
 
 from .forms import (
-    HashTestBlankForm, HashTestForm, HashTestFormWithFile, ManyModel, OtherModelForm, TestForm,
+    HashTestBlankForm, HashTestForm, HashTestFormWithFile, ManyModel,
+    OtherModelForm, TestForm,
 )
 
 success_string = "Done was called!"
@@ -219,7 +220,7 @@ class FormHmacTests(unittest.TestCase):
 class PicklingTests(unittest.TestCase):
 
     def setUp(self):
-        super(PicklingTests, self).setUp()
+        super().setUp()
         ManyModel.objects.create(name="jane")
 
     def test_queryset_hash(self):
